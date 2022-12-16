@@ -19,7 +19,7 @@ namespace QuizApi.Controllers
         }
         // GET: api/<UsersController>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetTodoItems()
+        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
             if (_context.Users == null)
             {
@@ -30,10 +30,10 @@ namespace QuizApi.Controllers
         // GET api/<UsersController>/5
         [HttpGet("{id}")]
 
-        public async Task<ActionResult<User>> GetTodoItem(long id)
+        public async Task<ActionResult<User>> GetUsers(long id)
         {
             if (_context.Users == null)
-            { 
+            {
                 return NotFound();
             }
             var user = await _context.Users.FindAsync(id);
@@ -48,7 +48,7 @@ namespace QuizApi.Controllers
 
         // POST api/<UsersController>
         [HttpPost]
-        public async Task<ActionResult<User>> PostTodoItem(User user)
+        public async Task<ActionResult<User>> PostUser(User user)
         {
             if (_context.Users == null)
             {

@@ -11,7 +11,7 @@ using QuizApi.Context;
 namespace QuizApi.Migrations
 {
     [DbContext(typeof(QuizContext))]
-    [Migration("20221216154101_InitialCreate")]
+    [Migration("20221216183645_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
