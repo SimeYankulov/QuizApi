@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using QuizApi.Context;
+using QuizApi.Repositories;
+using QuizApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,13 +14,18 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//
+
+var connectionString = builder.Configuration.GetConnectionString("QuizDataBase");
+builder.Services.AddDbContext<QuizContext>(options =>
+    options.UseSqlServer(connectionString));
+
+builder.Services.AddScoped<IUserService,UserService>();
+builder.Services.AddScoped<IUserRepository,UserRepository>();
+
+//
 var app = builder.Build();
 
-
-void connectionString(SqlServerDbContextOptionsBuilder obj)
-{
-    throw new NotImplementedException();
-}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

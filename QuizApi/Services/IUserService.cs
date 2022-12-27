@@ -1,8 +1,8 @@
 ﻿using QuizApi.Entities;
 
-namespace QuizApi.Repositories
+namespace QuizApi.Services
 {
-    public interface IUserRepository
+    public interface IUserService
     {
         Task<List<User>> GetUsers();
         Task AddUser(User user);

@@ -5,15 +5,9 @@ namespace QuizApi.Context
 
     public class QuizContext : DbContext
     {
-        protected readonly IConfiguration Configuration;
-
-        public QuizContext(IConfiguration configuration)
+        public QuizContext(DbContextOptions<QuizContext>options):base(options)
         { 
-            Configuration = configuration;
-        }
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-        {
-            options.UseSqlServer(Configuration.GetConnectionString("QuizDataBase"));
+           
         }
         public DbSet<User> Users { get; set; }
     }

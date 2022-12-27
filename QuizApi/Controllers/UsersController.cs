@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuizApi.Context;
 using QuizApi.Entities;
+using QuizApi.Services;
+using System.Reflection.Metadata.Ecma335;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -11,79 +13,108 @@ namespace QuizApi.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private QuizContext _context;
-
-        public UsersController(QuizContext context)
+        private readonly IUserService _userService;
+        public UsersController(IUserService userService)
         {
-            _context = context;
+            _userService = userService;
         }
         // GET: api/<UsersController>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
-            if (_context.Users == null)
+            try
             {
-                return NotFound();
+                return await _userService.GetUsers();
             }
-            return await _context.Users.ToListAsync();
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error retrieving data from the database");
+            }
         }
+
+
         // GET api/<UsersController>/5
         [HttpGet("{id}")]
-
-        public async Task<ActionResult<User>> GetUsers(long id)
+        public async Task<ActionResult<User>> GetUser(int id)
         {
-            if (_context.Users == null)
+            try
             {
-                return NotFound();
+                var user = await _userService.GetUser(id);
+                if (user == null) return NotFound();
+                return user;
             }
-            var user = await _context.Users.FindAsync(id);
-
-            if (user == null)
+            catch (Exception)
             {
-                return NotFound();
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error retrieving data from the database");
             }
-
-            return user;
-        }
-
+        } 
+        
         // POST api/<UsersController>
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public async Task<ActionResult> PostUser(User user)
         {
-            if (_context.Users == null)
+            try
             {
-                return Problem("Entity set 'QuizContext.Users'  is null.");
-            }
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+                if (user == null)
+                    return BadRequest();
 
-            return CreatedAtAction(nameof(user), new { id = user.UserId }, user);
+                await _userService.AddUser(user);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error creating new user record");
+            }
         }
 
         // PUT api/<UsersController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<ActionResult> PutAsync(int id, [FromBody] User info)
         {
-        }
+            try
+            {
+                var user = await _userService.GetUser(id);
+                if (user == null)
+                    return NotFound();
 
+                //
+                user.FirstName = info.FirstName;
+                user.LastName = info.LastName;
+                user.Email = info.Email;
+                //
+                await _userService.UpdateUser(user);
+                       return Ok();
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error updating user record");
+            }
+        }
+        
         // DELETE api/<UsersController>/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(long id)
+        public async Task<IActionResult> DeleteUser(int id)
         {
-            if (_context.Users == null)
+            try
             {
-                return NotFound();
+                var user = await _userService.GetUser(id);
+
+                if(user == null)
+                {
+                    return NotFound();
+                }
+                await _userService.DeleteUser(user);
+                return Ok();
             }
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
+            catch (Exception)
             {
-                return NotFound();
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error deleting data");
             }
-
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
         }
     }
 }
