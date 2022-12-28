@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizApi", "QuizApi\QuizApi.csproj", "{D1DCF00D-2168-471C-A93A-D62B6D768572}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuizApi", "QuizApi\QuizApi.csproj", "{D1DCF00D-2168-471C-A93A-D62B6D768572}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{0DF7C619-44E6-4DA9-8646-C238B9F50EF4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{0FD18580-A04B-41E6-9185-D9205253205D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{D1DCF00D-2168-471C-A93A-D62B6D768572}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1DCF00D-2168-471C-A93A-D62B6D768572}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1DCF00D-2168-471C-A93A-D62B6D768572}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0DF7C619-44E6-4DA9-8646-C238B9F50EF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DF7C619-44E6-4DA9-8646-C238B9F50EF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DF7C619-44E6-4DA9-8646-C238B9F50EF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DF7C619-44E6-4DA9-8646-C238B9F50EF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0FD18580-A04B-41E6-9185-D9205253205D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FD18580-A04B-41E6-9185-D9205253205D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FD18580-A04B-41E6-9185-D9205253205D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FD18580-A04B-41E6-9185-D9205253205D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
