@@ -1,8 +1,9 @@
-﻿ using Microsoft.AspNetCore.Mvc;
+﻿using Data.Entities;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using QuizApi.Context;
-using QuizApi.Entities;
-using QuizApi.Services;
+
+using Services.Services;
+using Shared.Models;
 using System.Reflection.Metadata.Ecma335;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -20,7 +21,7 @@ namespace QuizApi.Controllers
         }
         // GET: api/<UsersController>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<UserVM>>> GetUsers()
         {
             try
             {
@@ -36,24 +37,24 @@ namespace QuizApi.Controllers
 
         // GET api/<UsersController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
+        public async Task<ActionResult<UserVM>> GetUser(int id)
         {
             try
             {
-                var user = await _userService.GetUser(id);
-                if (user == null) return NotFound();
-                return user;
+                var UserVM = await _userService.GetUser(id);
+                if (UserVM == null) return NotFound();
+                return UserVM;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Error retrieving data from the database");
+                    "Error retrieving data from the database : "+ex.Message);
             }
         } 
         
         // POST api/<UsersController>
         [HttpPost]
-        public async Task<ActionResult> PostUser(User user)
+        public async Task<ActionResult> PostUser(UserVM user)
         {
             try
             {
@@ -72,7 +73,7 @@ namespace QuizApi.Controllers
 
         // PUT api/<UsersController>/5
         [HttpPut("{id}")]
-        public async Task<ActionResult> PutAsync(int id, [FromBody] User info)
+        public async Task<ActionResult> PutAsync(int id, [FromBody] UserVM info)
         {
             try
             {
@@ -80,12 +81,12 @@ namespace QuizApi.Controllers
                 if (user == null)
                     return NotFound();
 
-                //
+                /*
                 user.FirstName = info.FirstName;
                 user.LastName = info.LastName;
                 user.Email = info.Email;
-                //
-                await _userService.UpdateUser(user);
+                */
+                await _userService.UpdateUser(info,id);
                        return Ok();
             }
             catch (Exception)
@@ -107,7 +108,7 @@ namespace QuizApi.Controllers
                 {
                     return NotFound();
                 }
-                await _userService.DeleteUser(user);
+                await _userService.DeleteUser(id);
                 return Ok();
             }
             catch (Exception)

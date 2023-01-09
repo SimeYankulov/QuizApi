@@ -1,13 +1,14 @@
-﻿using QuizApi.Entities;
+﻿using Data.Entities;
+using Shared.Models;
 
-namespace QuizApi.Services
+namespace Services.Services
 {
     public interface IUserService
     {
-        Task<List<User>> GetUsers();
-        Task AddUser(User user);
-        Task<User> GetUser(int id);
-        Task DeleteUser(User user);
-        Task UpdateUser(User user);
+        Task<List<UserVM>> GetUsers();
+        Task AddUser(UserVM user);
+        Task<UserVM> GetUser(int id);
+        Task DeleteUser(int id);
+        Task UpdateUser(UserVM user,int id);
     }
 }

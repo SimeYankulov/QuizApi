@@ -1,8 +1,9 @@
 ﻿//using Microsoft.AspNetCore.Http.HttpResults;
-using QuizApi.Entities;
-using QuizApi.Repositories;
+using Data.Entities;
+using Data.Repositories;
+using Shared.Models;
 
-namespace QuizApi.Services
+namespace Services.Services
 {
     public class UserService:IUserService
     {
@@ -13,29 +14,29 @@ namespace QuizApi.Services
             _userRepository = userRepository;
         }
 
-        public async Task<List<User>> GetUsers()
+        public async Task<List<UserVM>> GetUsers()
         {
             return await _userRepository.GetUsers();
         }
 
-        public async Task AddUser(User user)
+        public async Task AddUser(UserVM user)
         {
             await _userRepository.AddUser(user);
         }
 
-        public async Task<User> GetUser(int id)
+        public async Task<UserVM> GetUser(int id)
         {
             return await _userRepository.GetUser(id);
         }
 
-        public async Task DeleteUser(User user)
+        public async Task DeleteUser(int id)
         {
-           await _userRepository.DeleteUser(user);
+           await _userRepository.DeleteUser(id);
         }
 
-        public async Task UpdateUser(User user)
+        public async Task UpdateUser(UserVM user,int id)
         {
-           await _userRepository.UpdateUser(user);
+           await _userRepository.UpdateUser(user, id);
         }
     }
 }

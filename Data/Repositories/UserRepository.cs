@@ -1,47 +1,66 @@
-﻿using Microsoft.EntityFrameworkCore;
-using QuizApi.Context;
-using QuizApi.Entities;
+﻿using AutoMapper;
+using Data.Context;
+using Data.Entities;
+using Data.Repositories;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
+using Shared.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Numerics;
+using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 
-namespace QuizApi.Repositories
+namespace Data.Repositories
 {
     public class UserRepository:QuizContext, IUserRepository
     {
+        private IMapper mapper;
         public UserRepository(DbContextOptions<QuizContext> options):base(options)
         {
-
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<User, UserVM>()
+                .ReverseMap();
+            });
+             mapper = config.CreateMapper();
         }
 
-        public async Task<List<User>> GetUsers()
+        public async Task<List<UserVM>> GetUsers()
         {
-            return await Users.ToListAsync();
+            return  mapper.Map<List<User>,List<UserVM>>(await Users.ToListAsync());
         }
 
-        public async Task AddUser(User user)
+        public async Task AddUser(UserVM user)
         {
-            await Users.AddAsync(user);
+            
+            await Users.AddAsync(mapper.Map<UserVM,User>(user));
             await SaveChangesAsync();
         }
 
-       public async Task<User> GetUser(int id)
+       public async Task<UserVM> GetUser(int id)
         {
-            return await Users.FindAsync(id);
+            return mapper.Map<User,UserVM>(await Users.FindAsync(id));
         }
-
-        public async Task DeleteUser(User user)
+        //prob
+        public async Task DeleteUser(int id)
         {
+            var user = await Users.FindAsync(id);
             Users.Remove(user);
             await SaveChangesAsync();
         }
-
-        public async Task UpdateUser(User user)
+        //prob
+        public async Task UpdateUser(UserVM user,int id)
         {
-            //throw new NotImplementedException();
-            // return  await AsyncUpdate();
-            Users.Update(user);
+            var userdb = await Users.FindAsync(id);
+
+            userdb.FirstName = user.FirstName;
+            userdb.LastName = user.LastName;
+            userdb.Email = user.Email;
+
+            Users.Update(userdb);
+            //Users.Update(mapper.Map<UserVM,User>(user));
             await SaveChangesAsync();
         }
     }
 }
+// update user method , viewmodels , validations

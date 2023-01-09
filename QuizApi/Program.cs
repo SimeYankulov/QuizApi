@@ -1,9 +1,9 @@
+using Data.Context;
+using Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
-using QuizApi.Context;
-using QuizApi.Repositories;
-using QuizApi.Services;
+using Services.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,11 +17,15 @@ builder.Services.AddSwaggerGen();
 //
 
 var connectionString = builder.Configuration.GetConnectionString("QuizDataBase");
+
 builder.Services.AddDbContext<QuizContext>(options =>
     options.UseSqlServer(connectionString));
 
 builder.Services.AddScoped<IUserService,UserService>();
 builder.Services.AddScoped<IUserRepository,UserRepository>();
+
+builder.Services.AddScoped<ITeamService, TeamService>();
+builder.Services.AddScoped<ITeamRepository,TeamRepository>();
 
 //
 var app = builder.Build();
