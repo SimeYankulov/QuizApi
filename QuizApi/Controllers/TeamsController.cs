@@ -1,8 +1,10 @@
 ﻿using Data.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using Services.Services;
 using Shared.Models;
+using System.Data;
 
 namespace QuizApi.Controllers
 {
@@ -17,6 +19,7 @@ namespace QuizApi.Controllers
         }
         // GET: api/<TeamsController>
         [HttpGet]
+        [Authorize(Roles = "user")]
         public async Task<ActionResult<IEnumerable<TeamModel>>> GetTeams()
         {
             try
@@ -31,6 +34,7 @@ namespace QuizApi.Controllers
         }
         // GET api/<TeamsController>/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<TeamModel>> GetTeam(int id)
         {
             try
@@ -48,6 +52,7 @@ namespace QuizApi.Controllers
 
         // POST api/<TeamsController>
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult> PostTeam(TeamModel TeamM)
         {
             try
@@ -67,6 +72,7 @@ namespace QuizApi.Controllers
 
         // PUT api/<TeamsController>/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult> UpdateTeam(int id, [FromBody] Team info)
         {
             try
@@ -87,6 +93,7 @@ namespace QuizApi.Controllers
 
         // DELETE api/<UsersController>/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteTeam(int id)
         {
             try
