@@ -1,5 +1,6 @@
 ﻿using Data.Entities;
 using Data.Repositories;
+using Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,29 +18,64 @@ namespace Services.Services
             _teamRepository = teamRepository;
         }
 
-        public async Task AddTeam(Team team)
+        public async Task AddTeam(TeamModel team)
         {
-            await _teamRepository.AddTeam(team);
+            try
+            {
+                await _teamRepository.AddTeam(team);
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message.ToString());
+            }
+       
         }
 
-        public async Task DeleteTeam(Team team)
+        public async Task DeleteTeam(int id)
         {
-            await _teamRepository.DeleteTeam(team);
+            try
+            {
+                await _teamRepository.DeleteTeam(id);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message.ToString());
+            }
         }
 
-        public async Task<Team> GetTeam(int id)
+        public async Task<TeamModel> GetTeam(int id)
         {
-            return await _teamRepository.GetTeam(id);
+            try
+            {
+                return await _teamRepository.GetTeam(id);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message.ToString());
+            }
         }
 
-        public async Task<List<Team>> GetTeams()
+        public async Task<List<TeamModel>> GetTeams()
         {
-            return await _teamRepository.GetTeams();
+            try
+            {
+                return await _teamRepository.GetTeams();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message.ToString());
+            }
         }
-
-        public async Task UpdateTeam(Team team)
+        public async Task UpdateTeam(TeamModel team,int id)
         {
-            await _teamRepository.UpdateTeam(team);
+            try
+            {
+                await _teamRepository.UpdateTeam(team, id);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message.ToString());
+            }
         }
     }
 }

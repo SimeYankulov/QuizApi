@@ -23,10 +23,8 @@ namespace Data.Context
                 .HasForeignKey(tu => tu.TeamId);
             modelBuilder.Entity<Team_User>()
                 .HasOne(tu => tu.user)
-                .WithMany(u => u.team_Users)
+                .WithMany(u => u.teamUsers)
                 .HasForeignKey(tu => tu.UserId);
-
-            //
         }
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 using Services.Services;
+using Shared.Models;
 
 namespace QuizApi.Controllers
 {
@@ -16,78 +17,71 @@ namespace QuizApi.Controllers
         }
         // GET: api/<TeamsController>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Team>>> GetTeams()
+        public async Task<ActionResult<IEnumerable<TeamModel>>> GetTeams()
         {
             try
             {
                 return await _teamService.GetTeams();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Error retrieving data from the database");
+                    "Error retrieving data from the database :"+ex.Message);
             }
         }
-
-
         // GET api/<TeamsController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Team>> GetTeam(int id)
+        public async Task<ActionResult<TeamModel>> GetTeam(int id)
         {
             try
             {
-                var team = await _teamService.GetTeam(id);
-                if (team == null) return NotFound();
-                return team;
+                var TeamM = await _teamService.GetTeam(id);
+                if (TeamM == null) return NotFound();
+                return TeamM;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Error retrieving data from the database");
+                    "Error retrieving data from the database:" + ex.Message);
             }
         }
 
         // POST api/<TeamsController>
         [HttpPost]
-        public async Task<ActionResult> PostTeam(Team team)
+        public async Task<ActionResult> PostTeam(TeamModel TeamM)
         {
             try
             {
-                if (team == null)
+                if (TeamM == null)
                     return BadRequest();
 
-                await _teamService.AddTeam(team);
+                await _teamService.AddTeam(TeamM);
                 return Ok();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Error creating new user record");
+                    "Error creating new user record:" + ex.Message);
             }
         }
 
         // PUT api/<TeamsController>/5
         [HttpPut("{id}")]
-        public async Task<ActionResult> PutAsync(int id, [FromBody] Team info)
+        public async Task<ActionResult> UpdateTeam(int id, [FromBody] Team info)
         {
             try
             {
-                var team = await _teamService.GetTeam(id);
-                if (team == null)
+                var teamm = await _teamService.GetTeam(id);
+                if (teamm == null)
                     return NotFound();
 
-                //
-                team.Name = info.Name;
-                team.Captain_Name = info.Captain_Name;
-                team.Points = info.Points;
-                //
-                await _teamService.UpdateTeam(team);
+                await _teamService.UpdateTeam(teamm,id);
                 return Ok();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Error updating user record");
+                    "Error updating user record:" + ex.Message);
             }
         }
 
@@ -103,13 +97,13 @@ namespace QuizApi.Controllers
                 {
                     return NotFound();
                 }
-                await _teamService.DeleteTeam(team);
+                await _teamService.DeleteTeam(id);
                 return Ok();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Error deleting data");
+                    "Error deleting data:" + ex.Message);
             }
         }
     }

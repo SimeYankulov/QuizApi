@@ -5,10 +5,13 @@ namespace Data.Repositories
 {
     public interface IUserRepository
     {
-        Task<List<UserVM>> GetUsers();
-        Task AddUser(UserVM user);
-        Task<UserVM> GetUser(int id);
+        Task<List<UserModel>> GetUsers();
+        Task AddUser(UserModel user);
+        Task<UserModel> GetUser(int id);
         Task DeleteUser(int id);
-        Task UpdateUser(UserVM user,int id);
+        Task UpdateUser(UserModel user,int id);
+
+        Task AddUserToTeam(int teamId,int userId);
+        Task RemoveUserFromTeam(int teamId, int userId);
     }
 }

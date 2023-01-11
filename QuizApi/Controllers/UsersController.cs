@@ -15,35 +15,38 @@ namespace QuizApi.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
-        public UsersController(IUserService userService)
+        private readonly ITeamService _teamService;
+
+        public UsersController(IUserService userService,ITeamService teamService)
         {
             _userService = userService;
+            _teamService = teamService;
         }
         // GET: api/<UsersController>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserVM>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<UserModel>>> GetUsers()
         {
             try
             {
                 return await _userService.GetUsers();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Error retrieving data from the database");
+                    "Error retrieving data from the database :"+ ex.Message);
             }
         }
 
 
         // GET api/<UsersController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserVM>> GetUser(int id)
+        public async Task<ActionResult<UserModel>> GetUser(int id)
         {
             try
             {
-                var UserVM = await _userService.GetUser(id);
-                if (UserVM == null) return NotFound();
-                return UserVM;
+                var UserM = await _userService.GetUser(id);
+                if (UserM == null) return NotFound();
+                return UserM;
             }
             catch (Exception ex)
             {
@@ -54,7 +57,7 @@ namespace QuizApi.Controllers
         
         // POST api/<UsersController>
         [HttpPost]
-        public async Task<ActionResult> PostUser(UserVM user)
+        public async Task<ActionResult> PostUser(UserModel user)
         {
             try
             {
@@ -64,35 +67,30 @@ namespace QuizApi.Controllers
                 await _userService.AddUser(user);
                 return Ok();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Error creating new user record");
+                    "Error creating new user record :"+ex.Message);
             }
         }
 
         // PUT api/<UsersController>/5
         [HttpPut("{id}")]
-        public async Task<ActionResult> PutAsync(int id, [FromBody] UserVM info)
+        public async Task<ActionResult> UpdateUser(int id, [FromBody] UserModel info)
         {
             try
             {
-                var user = await _userService.GetUser(id);
-                if (user == null)
+                var userm = await _userService.GetUser(id);
+                if (userm == null)
                     return NotFound();
 
-                /*
-                user.FirstName = info.FirstName;
-                user.LastName = info.LastName;
-                user.Email = info.Email;
-                */
                 await _userService.UpdateUser(info,id);
                        return Ok();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Error updating user record");
+                    "Error updating user record:" + ex.Message);
             }
         }
         
@@ -111,10 +109,62 @@ namespace QuizApi.Controllers
                 await _userService.DeleteUser(id);
                 return Ok();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Error deleting data");
+                    "Error deleting data:" + ex.Message);
+            }
+        }
+
+        // PUT api/<UsersController>/
+        [HttpPut("{userid}/team/{teamid}")]
+        public async Task<ActionResult> AddUserToTeam(int userid,int teamid)
+        {
+           
+                try
+                {
+                    var user =await _userService.GetUser(userid);
+                    var team =await _teamService.GetTeam(teamid);
+
+                if (user != null && team != null)
+                {
+                    await _userService.AddUserToTeam(userid, teamid);
+                    return Ok();
+                }
+                else if (user == null && team == null) { throw new Exception("User and Team not found"); }
+                else if (user == null) { throw new Exception("User not found"); }
+                else if (team == null) { throw new Exception("Team not found"); }
+                else return NotFound();
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError,
+                   "Error adding user to team :" + ex.Message);
+                }
+        }
+        // DELETE api/<UsersController>/
+        [HttpDelete("{userid}/team/{teamid}")]
+        public async Task<IActionResult> RemoveUserFromTeam(int userid,int teamid)
+        {
+            try
+            {
+                var user = await _userService.GetUser(userid);
+                var team = await _teamService.GetTeam(teamid);
+
+                if (user != null && team != null)
+                {
+                    await _userService.RemoveUserFromTeam(userid, teamid);
+                    return Ok();
+                }
+                else if (user == null && team == null) { throw new Exception("User and Team not found"); }
+                else if (user == null) { throw new Exception("User not found"); }
+                else if (team == null) { throw new Exception("Team not found"); }
+                else return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+               "Error removing user from team :" + ex.Message);
             }
         }
     }

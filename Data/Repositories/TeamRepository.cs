@@ -1,7 +1,9 @@
-﻿using Data.Context;
+﻿using AutoMapper;
+using Data.Context;
 using Data.Entities;
 using Data.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,36 +14,88 @@ namespace Data.Repositories
 {
     public class TeamRepository : QuizContext, ITeamRepository
     {
+        private IMapper mapper;
         public TeamRepository(DbContextOptions<QuizContext> options) : base(options)
         {
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Team, TeamModel>()
+                .ReverseMap();
+            });
+            mapper = config.CreateMapper();
         }
 
-        public async Task AddTeam(Team team)
+        public async Task AddTeam(TeamModel team)
         {
-           await Teams.AddAsync(team);
-            await SaveChangesAsync();
+            try
+            {
+                await Teams.AddAsync(mapper.Map<TeamModel, Team>(team));
+                await SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message.ToString());
+            }
         }
 
-        public async Task DeleteTeam(Team team)
+        public async Task DeleteTeam(int id)
         {
-            Teams.Remove(team);
-            await SaveChangesAsync();
+            try
+            {
+                var team = await Teams.FindAsync(id);
+                Teams.Remove(team);
+                await SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message.ToString());
+            }
         }
 
-        public async Task<Team> GetTeam(int id)
+        public async Task<TeamModel> GetTeam(int id)
         {
-            return await Teams.FindAsync(id);
+            try
+            {
+                return mapper.Map<Team, TeamModel>
+                    (await Teams.FindAsync(id));
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message.ToString());
+            }   
         }
 
-        public async Task<List<Team>> GetTeams()
+        public async Task<List<TeamModel>> GetTeams()
         {
-            return await Teams.ToListAsync();
+            try
+            {
+                return mapper.Map<List<Team>, List<TeamModel>>
+                 (await Teams.ToListAsync());
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message.ToString());
+            }   
         }
 
-        public async Task UpdateTeam(Team team)
+        public async Task UpdateTeam(TeamModel team,int id)
         {
-            Teams.Update(team);
-            await SaveChangesAsync();
+            try
+            {
+                var teamdb = await Teams.FindAsync(id);
+
+                teamdb.Name = team.Name;
+                teamdb.Captain_Name = team.Captain_Name;
+                teamdb.Points = team.Points;
+
+                Teams.Update(teamdb);
+                await SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message.ToString());
+            }
         }
     }
 }

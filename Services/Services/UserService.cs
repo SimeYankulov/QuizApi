@@ -14,29 +14,90 @@ namespace Services.Services
             _userRepository = userRepository;
         }
 
-        public async Task<List<UserVM>> GetUsers()
+        public async Task<List<UserModel>> GetUsers()
         {
-            return await _userRepository.GetUsers();
+            try
+            {
+                return await _userRepository.GetUsers();
+            }
+            catch(Exception ex)
+            {
+               throw new Exception(ex.Message.ToString());
+            }
         }
 
-        public async Task AddUser(UserVM user)
+        public async Task AddUser(UserModel user)
         {
-            await _userRepository.AddUser(user);
+            try
+            {
+                await _userRepository.AddUser(user);
+            }
+            catch
+            (Exception ex)
+            {
+                throw new Exception(ex.Message.ToString());
+            }
         }
 
-        public async Task<UserVM> GetUser(int id)
+        public async Task<UserModel> GetUser(int id)
         {
-            return await _userRepository.GetUser(id);
+            try
+            {
+                return await _userRepository.GetUser(id);
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message.ToString());
+            }
         }
 
         public async Task DeleteUser(int id)
         {
-           await _userRepository.DeleteUser(id);
+            try
+            {
+                await _userRepository.DeleteUser(id);
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message.ToString());
+            }
+
         }
 
-        public async Task UpdateUser(UserVM user,int id)
+        public async Task UpdateUser(UserModel user,int id)
         {
-           await _userRepository.UpdateUser(user, id);
+            try
+            {
+                await _userRepository.UpdateUser(user, id);
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message.ToString());
+            }
+        }
+
+        public async Task AddUserToTeam(int teamId, int userId)
+        {
+            try
+            {
+                await _userRepository.AddUserToTeam(teamId, userId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message.ToString());
+            }
+        }
+
+        public async Task RemoveUserFromTeam(int userId, int teamId)
+        {
+            try
+            {
+                await _userRepository.RemoveUserFromTeam(teamId, userId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message.ToString());
+            }
         }
     }
 }

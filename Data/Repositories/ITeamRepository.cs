@@ -1,6 +1,6 @@
 ﻿
 using Data.Entities;
-
+using Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +11,10 @@ namespace Data.Repositories
 {
     public interface ITeamRepository
     {
-        Task AddTeam(Team team);
-        Task DeleteTeam(Team team);
-        Task<Team> GetTeam(int id);
-        Task<List<Team>> GetTeams();
-        Task UpdateTeam(Team team);
+        Task AddTeam(TeamModel team);
+        Task DeleteTeam(int id);
+        Task<TeamModel> GetTeam(int id);
+        Task<List<TeamModel>> GetTeams();
+        Task UpdateTeam(TeamModel team,int id);
     }
 }

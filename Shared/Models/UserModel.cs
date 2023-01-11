@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Shared.Models
 {
-    public class TeamVM
+    public class UserModel
     {
-        public string Name { get; set; }
-        public string Captain_Name { get; set; }
-        public int Points { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
     }
 }

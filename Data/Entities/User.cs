@@ -14,7 +14,7 @@ namespace Data.Entities
         public string LastName { get; set; }
         public string Email { get; set; }
 
-        public ICollection<Team_User> team_Users { get; set; }
+        public ICollection<Team_User> teamUsers { get; set; }
 
     }
 }
