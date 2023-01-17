@@ -8,19 +8,13 @@ using System.Threading.Tasks;
 
 namespace Data.Entities
 {
-    [Table("Team_Users")]
-    public class Team_User
+    [Table("Roles")]
+    public class Role
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-
-        public int TeamId { get; set; }
-        public Team? team { get; set; }
-        public int UserId { get; set; }
-        public User? user { get; set; }
-        
-
-
+        public int RoleId { get; set; }
+        public string? RoleName { get; set; }
+        public ICollection<User>? Users { get; set; }
     }
 }

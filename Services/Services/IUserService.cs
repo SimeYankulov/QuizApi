@@ -13,5 +13,6 @@ namespace Services.Services
 
         Task AddUserToTeam(int teamId,int userId);
         Task RemoveUserFromTeam(int userid, int teamid);
+        Task<int> CheckUser(UserLogin user);
     }
 }

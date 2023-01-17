@@ -13,5 +13,6 @@ namespace Data.Repositories
 
         Task AddUserToTeam(int teamId,int userId);
         Task RemoveUserFromTeam(int teamId, int userId);
+        Task<int> GetUser(UserLogin user);
     }
 }

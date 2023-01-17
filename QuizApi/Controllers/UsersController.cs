@@ -21,17 +21,19 @@ namespace QuizApi.Controllers
     {
         private readonly IUserService _userService;
         private readonly ITeamService _teamService;
+        private readonly IRoleService _roleService;
         private IConfiguration _config;
 
-        public UsersController(IUserService userService, ITeamService teamService, IConfiguration config)
+        public UsersController(IUserService userService, ITeamService teamService,IRoleService roleService, IConfiguration config)
         {
             _userService = userService;
             _teamService = teamService;
+            _roleService = roleService;
             _config = config;
         }
         // GET: api/<UsersController>
         [HttpGet]
-        [Authorize(Roles = "user")]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<IEnumerable<UserModel>>> GetUsers()
         {
             try
@@ -48,7 +50,7 @@ namespace QuizApi.Controllers
 
         // GET api/<UsersController>/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "user")]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<UserModel>> GetUser(int id)
         {
             try
@@ -65,8 +67,8 @@ namespace QuizApi.Controllers
         }
 
         // POST api/<UsersController>
-        [HttpPost]
-        [Authorize(Roles = "admin")]
+         [HttpPost("Register")]
+        [AllowAnonymous]
         public async Task<ActionResult> PostUser(UserModel user)
         {
             try
@@ -182,17 +184,26 @@ namespace QuizApi.Controllers
             }
         }
 
-        [HttpGet("Login")]
+        [HttpPost("Login")]
         [AllowAnonymous]
-        public ActionResult<string> Login(string role)
-        {
+        public async Task<ActionResult<string>> LoginAsync(UserLogin user)
+        {       
+            var roleId = await _userService.CheckUser(user);
+            if(roleId == 0)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+               "Email or Password incorrect");
+            }
+
+            var UserRole = await _roleService.GetRole(roleId);
+
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
             {
                      new Claim(ClaimTypes.Name, "Name"),
-                    new Claim(ClaimTypes.Role, role)
+                    new Claim(ClaimTypes.Role, UserRole)
             };
             var token = new JwtSecurityToken(_config["Jwt:Issuer"],
                     _config["Jwt:Audience"],

@@ -103,5 +103,18 @@ namespace Services.Services
                 throw new Exception(ex.Message.ToString());
             }
         }
+
+        public Task<int> CheckUser(UserLogin user)
+        {
+            try
+            {
+                return _userRepository.GetUser(user);
+                
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message.ToString());
+            }
+        }
     }
 }

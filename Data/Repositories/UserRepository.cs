@@ -87,6 +87,8 @@ namespace Data.Repositories
                 userdb.FirstName = user.FirstName;
                 userdb.LastName = user.LastName;
                 userdb.Email = user.Email;
+                userdb.Password = user.Password;
+                userdb.RoleId = user.RoleId;
 
                 Users.Update(userdb);
                 await SaveChangesAsync();
@@ -157,6 +159,21 @@ namespace Data.Repositories
                 throw new Exception(ex.Message.ToString());
             }
 
+        }
+
+        public async Task<int> GetUser(UserLogin user)
+        {
+            try
+            {
+                var usr = await Users.SingleOrDefaultAsync(a => a.Email == user.Email && a.Password == user.Password);
+                if (usr != null) { return usr.RoleId; }
+
+                else return 0;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message.ToString());
+            }
         }
     }
 }

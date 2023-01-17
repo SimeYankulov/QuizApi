@@ -17,7 +17,6 @@ namespace Data.Repositories
         private IMapper mapper;
         public TeamRepository(DbContextOptions<QuizContext> options) : base(options)
         {
-
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<Team, TeamModel>()

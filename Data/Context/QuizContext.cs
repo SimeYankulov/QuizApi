@@ -1,5 +1,7 @@
 ﻿using Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+
 namespace Data.Context
 {
 
@@ -12,6 +14,7 @@ namespace Data.Context
         public DbSet<User> Users { get; set; }
         public DbSet<Team> Teams { get; set; }
         public DbSet<Team_User> TeamUsers { get; set; } 
+        public DbSet<Role> Roles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -25,6 +28,11 @@ namespace Data.Context
                 .HasOne(tu => tu.user)
                 .WithMany(u => u.teamUsers)
                 .HasForeignKey(tu => tu.UserId);
+
+                    modelBuilder.Entity<Role>()
+            .HasMany(c => c.Users)
+            .WithOne(e => e.Role)
+            .IsRequired();
         }
     }
 }
