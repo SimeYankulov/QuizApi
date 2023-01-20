@@ -11,7 +11,7 @@ namespace Data.Entities
         public int Id { get; set; }
 
         public int TeamId { get; set; } = default!;
-        public Team? team { get; set; } = default!;
+        public Team? team { get; set; } = default!; 
         public int UserId { get; set; } = default!;
         public User? user { get; set; } = default!;
 
