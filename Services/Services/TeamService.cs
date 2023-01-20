@@ -1,11 +1,5 @@
-﻿using Data.Entities;
-using Data.Repositories;
+﻿using Data.Repositories;
 using Shared.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services.Services
 {
@@ -17,7 +11,6 @@ namespace Services.Services
         {
             _teamRepository = teamRepository;
         }
-
         public async Task AddTeam(TeamModel team)
         {
             try
@@ -30,7 +23,6 @@ namespace Services.Services
             }
        
         }
-
         public async Task DeleteTeam(int id)
         {
             try
@@ -42,7 +34,6 @@ namespace Services.Services
                 throw new Exception(ex.Message.ToString());
             }
         }
-
         public async Task<TeamModel> GetTeam(int id)
         {
             try
@@ -54,7 +45,6 @@ namespace Services.Services
                 throw new Exception(ex.Message.ToString());
             }
         }
-
         public async Task<List<TeamModel>> GetTeams()
         {
             try

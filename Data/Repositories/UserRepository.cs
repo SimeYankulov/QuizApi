@@ -1,20 +1,17 @@
 ﻿using AutoMapper;
 using Data.Context;
 using Data.Entities;
-using Data.Repositories;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
 using Shared.Models;
-using System.ComponentModel.DataAnnotations;
-using System.Numerics;
-using System.Reflection.Metadata;
-using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 
 namespace Data.Repositories
 {
     public class UserRepository:QuizContext, IUserRepository
     {
         private IMapper mapper;
+
         public UserRepository(DbContextOptions<QuizContext> options):base(options)
         {
             var config = new MapperConfiguration(cfg =>
@@ -42,8 +39,27 @@ namespace Data.Repositories
         {
             try
             {
+                byte[] salt = RandomNumberGenerator.GetBytes(128 / 8);
+
+                string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                            password: user.Password!,
+                            salt: salt,
+                            prf: KeyDerivationPrf.HMACSHA256,
+                            iterationCount: 10000,
+                            numBytesRequested: 256 / 8));
+
                 await Users.AddAsync(mapper.Map<UserModel, User>(user));
                 await SaveChangesAsync();
+
+                var tempUser = await Users.SingleOrDefaultAsync(
+                    a => a.Email == user.Email && a.Password == user.Password);
+                tempUser!.Password = hashed;
+                tempUser!.Salt = salt;
+
+                Users.Update(tempUser);
+
+                await SaveChangesAsync();
+
             }
             catch(Exception ex)
             {
@@ -55,7 +71,7 @@ namespace Data.Repositories
         {
             try
             {
-                return mapper.Map<User, UserModel>(await Users.FindAsync(id));
+                return mapper.Map<User?, UserModel>(await Users.FindAsync(id));
             }
             catch (Exception ex)
             {
@@ -68,7 +84,7 @@ namespace Data.Repositories
             try
             {
                 var user = await Users.FindAsync(id);
-                Users.Remove(user);
+                Users.Remove(user!);
                 await SaveChangesAsync();
 
             }catch(Exception ex)
@@ -84,7 +100,7 @@ namespace Data.Repositories
             {
                 var userdb = await Users.FindAsync(id);
 
-                userdb.FirstName = user.FirstName;
+                userdb!.FirstName = user.FirstName;
                 userdb.LastName = user.LastName;
                 userdb.Email = user.Email;
                 userdb.Password = user.Password;
@@ -161,11 +177,11 @@ namespace Data.Repositories
 
         }
 
-        public async Task<int> GetUser(UserLogin user)
+        public async Task<int> GetUserRole(UserLogin user)
         {
             try
             {
-                var usr = await Users.SingleOrDefaultAsync(a => a.Email == user.Email && a.Password == user.Password);
+                var usr = await Users.SingleOrDefaultAsync(a => a.Email == user.Email);
                 if (usr != null) { return usr.RoleId; }
 
                 else return 0;
@@ -173,6 +189,46 @@ namespace Data.Repositories
             catch (Exception ex)
             {
                 throw new Exception(ex.Message.ToString());
+            }
+        }
+
+        public async Task<bool> FindUser(string? email)
+        {
+            try
+            {
+               var tempUser = await Users.SingleOrDefaultAsync(
+                    a => a.Email == email);
+                if (tempUser != null) { return true; }
+                else return false; 
+
+            }
+            catch(Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+        }
+
+        public async Task<bool> VerifyPassword(UserLogin loginCredentials)
+        {
+            try
+            {
+                var tempUser = await Users.SingleOrDefaultAsync(
+                     a => a.Email == loginCredentials.Email);
+                
+                if (tempUser == null) { return false; }
+
+                    string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                                password: loginCredentials.Password!,
+                                salt: tempUser.Salt!,
+                                prf: KeyDerivationPrf.HMACSHA256,
+                                iterationCount: 10000,
+                                numBytesRequested: 256 / 8));
+
+                if (hashed == tempUser.Password) { return true; } else return false;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message.ToString());
             }
         }
     }

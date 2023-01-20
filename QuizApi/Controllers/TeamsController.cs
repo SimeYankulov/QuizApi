@@ -1,10 +1,8 @@
 ﻿using Data.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
 using Services.Services;
 using Shared.Models;
-using System.Data;
 
 namespace QuizApi.Controllers
 {

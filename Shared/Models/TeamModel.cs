@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Shared.Models
+﻿namespace Shared.Models
 {
     public class TeamModel
     {
-        public string Name { get; set; }
-        public string Captain_Name { get; set; }
-        public int Points { get; set; }
+        public string? Name { get; set; } = default;
+        public string? Captain_Name { get; set; } = default;
+        public int? Points { get; set; } 
     }
 }

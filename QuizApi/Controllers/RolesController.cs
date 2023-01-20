@@ -18,7 +18,7 @@ namespace QuizApi.Controllers
 
         // GET: api/<RolesController>
         [HttpGet]
-       // [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<IEnumerable<RoleModel>>> GetRoles()
         {
             try
@@ -33,7 +33,7 @@ namespace QuizApi.Controllers
         }
         // POST api/<RolesController>
         [HttpPost]
-    //    [Authorize(Roles = "admin")]
+        //[Authorize(Roles = "admin")]
         public async Task<ActionResult> AddRole(RoleModel role)
         {
             try

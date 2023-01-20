@@ -1,11 +1,5 @@
-﻿//using Microsoft.AspNetCore.Http.HttpResults;
-using Data.Entities;
-using Data.Repositories;
-using Microsoft.IdentityModel.Tokens;
+﻿using Data.Repositories;
 using Shared.Models;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace Services.Services
 {
@@ -17,7 +11,6 @@ namespace Services.Services
         {
             _userRepository = userRepository;
         }
-
         public async Task<List<UserModel>> GetUsers()
         {
             try
@@ -29,7 +22,6 @@ namespace Services.Services
                throw new Exception(ex.Message.ToString());
             }
         }
-
         public async Task AddUser(UserModel user)
         {
             try
@@ -42,7 +34,6 @@ namespace Services.Services
                 throw new Exception(ex.Message.ToString());
             }
         }
-
         public async Task<UserModel> GetUser(int id)
         {
             try
@@ -54,7 +45,6 @@ namespace Services.Services
                 throw new Exception(ex.Message.ToString());
             }
         }
-
         public async Task DeleteUser(int id)
         {
             try
@@ -67,7 +57,6 @@ namespace Services.Services
             }
 
         }
-
         public async Task UpdateUser(UserModel user,int id)
         {
             try
@@ -79,7 +68,6 @@ namespace Services.Services
                 throw new Exception(ex.Message.ToString());
             }
         }
-
         public async Task AddUserToTeam(int teamId, int userId)
         {
             try
@@ -91,7 +79,6 @@ namespace Services.Services
                 throw new Exception(ex.Message.ToString());
             }
         }
-
         public async Task RemoveUserFromTeam(int userId, int teamId)
         {
             try
@@ -103,13 +90,36 @@ namespace Services.Services
                 throw new Exception(ex.Message.ToString());
             }
         }
-
-        public Task<int> CheckUser(UserLogin user)
+        public Task<int> GetUserRole(UserLogin user)
         {
             try
             {
-                return _userRepository.GetUser(user);
+                return _userRepository.GetUserRole(user);
                 
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message.ToString());
+            }
+        }
+
+        public Task<bool> FindUser(string? email)
+        {
+            try
+            {
+                return _userRepository.FindUser(email);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message.ToString());
+            }
+        }
+
+        public Task<bool> VerifyPassword(UserLogin loginCredentials)
+        {
+            try
+            {
+                return _userRepository.VerifyPassword(loginCredentials);
             }
             catch (Exception ex)
             {

@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Data.Entities
 {
@@ -15,12 +10,10 @@ namespace Data.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        public int TeamId { get; set; }
-        public Team? team { get; set; }
-        public int UserId { get; set; }
-        public User? user { get; set; }
-        
-
+        public int TeamId { get; set; } = default!;
+        public Team? team { get; set; } = default!;
+        public int UserId { get; set; } = default!;
+        public User? user { get; set; } = default!;
 
     }
 }

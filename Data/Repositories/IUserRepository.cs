@@ -1,5 +1,4 @@
-﻿using Data.Entities;
-using Shared.Models;
+﻿using Shared.Models;
 
 namespace Data.Repositories
 {
@@ -10,9 +9,10 @@ namespace Data.Repositories
         Task<UserModel> GetUser(int id);
         Task DeleteUser(int id);
         Task UpdateUser(UserModel user,int id);
-
         Task AddUserToTeam(int teamId,int userId);
         Task RemoveUserFromTeam(int teamId, int userId);
-        Task<int> GetUser(UserLogin user);
+        Task<int> GetUserRole(UserLogin user);
+        Task<bool> FindUser(string? email);
+        Task<bool> VerifyPassword(UserLogin loginCredentials);
     }
 }

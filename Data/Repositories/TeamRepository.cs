@@ -1,14 +1,8 @@
 ﻿using AutoMapper;
 using Data.Context;
 using Data.Entities;
-using Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Shared.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Data.Repositories
 {
@@ -43,7 +37,7 @@ namespace Data.Repositories
             try
             {
                 var team = await Teams.FindAsync(id);
-                Teams.Remove(team);
+                Teams.Remove(team!);
                 await SaveChangesAsync();
             }
             catch (Exception ex)
@@ -56,7 +50,7 @@ namespace Data.Repositories
         {
             try
             {
-                return mapper.Map<Team, TeamModel>
+                return mapper.Map<Team?, TeamModel>
                     (await Teams.FindAsync(id));
             }
             catch (Exception ex)
@@ -84,9 +78,9 @@ namespace Data.Repositories
             {
                 var teamdb = await Teams.FindAsync(id);
 
-                teamdb.Name = team.Name;
-                teamdb.Captain_Name = team.Captain_Name;
-                teamdb.Points = team.Points;
+                teamdb!.Name = team.Name!;
+                teamdb.Captain_Name = team.Captain_Name!;
+                teamdb.Points = (int)team.Points!;
 
                 Teams.Update(teamdb);
                 await SaveChangesAsync();

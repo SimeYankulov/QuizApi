@@ -1,13 +1,9 @@
-﻿using Data.Entities;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Services.Services;
 using Shared.Models;
-using System.Data;
 using System.IdentityModel.Tokens.Jwt;
-using System.Reflection.Metadata.Ecma335;
 using System.Security.Claims;
 using System.Text;
 
@@ -22,7 +18,7 @@ namespace QuizApi.Controllers
         private readonly IUserService _userService;
         private readonly ITeamService _teamService;
         private readonly IRoleService _roleService;
-        private IConfiguration _config;
+        private readonly IConfiguration _config;
 
         public UsersController(IUserService userService, ITeamService teamService,IRoleService roleService, IConfiguration config)
         {
@@ -75,9 +71,13 @@ namespace QuizApi.Controllers
             {
                 if (user == null)
                     return BadRequest();
-
-                await _userService.AddUser(user);
-                return Ok();
+                if (await _roleService.GetRole(user.RoleId) != null)
+                {
+                    await _userService.AddUser(user);
+                    return Ok();
+                }
+                else return NotFound("Invalid user role");
+                
             }
             catch (Exception ex)
             {
@@ -187,23 +187,28 @@ namespace QuizApi.Controllers
         [HttpPost("Login")]
         [AllowAnonymous]
         public async Task<ActionResult<string>> LoginAsync(UserLogin user)
-        {       
-            var roleId = await _userService.CheckUser(user);
-            if(roleId == 0)
+        {
+            
+            if (await _userService.FindUser(user.Email) == false)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-               "Email or Password incorrect");
+                return NotFound("User with email: " + user.Email + " not found.");
+            }
+            if(await _userService.VerifyPassword(user) == false)
+            {
+                return NotFound("Password incorrect");
             }
 
-            var UserRole = await _roleService.GetRole(roleId);
+            var userRoleId = await _userService.GetUserRole(user);
 
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var userRole = await _roleService.GetRole(userRoleId);
+
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
             {
-                     new Claim(ClaimTypes.Name, "Name"),
-                    new Claim(ClaimTypes.Role, UserRole)
+                     new Claim(ClaimTypes.Email, user.Email!),
+                    new Claim(ClaimTypes.Role, userRole)
             };
             var token = new JwtSecurityToken(_config["Jwt:Issuer"],
                     _config["Jwt:Audience"],

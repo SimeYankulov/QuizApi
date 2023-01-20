@@ -3,11 +3,6 @@ using Data.Context;
 using Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Shared.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Data.Repositories
 {
@@ -42,7 +37,7 @@ namespace Data.Repositories
             try
             {   
                 var role = await Roles.FindAsync(roleId);
-                return role.RoleName;
+                return  role!.RoleName!;
             }
             catch (Exception ex)
             {
