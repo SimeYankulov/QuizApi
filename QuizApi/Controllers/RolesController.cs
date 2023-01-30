@@ -7,7 +7,7 @@ namespace QuizApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RolesController :ControllerBase
+    public class RolesController : ControllerBase
     {
         private readonly IRoleService _roleService;
 

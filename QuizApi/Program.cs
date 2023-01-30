@@ -72,14 +72,14 @@ var connectionString = builder.Configuration.GetConnectionString("QuizDataBase")
 builder.Services.AddDbContext<QuizContext>(options =>
     options.UseSqlServer(connectionString));
 
-builder.Services.AddScoped<IUserService,UserService>();
-builder.Services.AddScoped<IUserRepository,UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<ITeamService, TeamService>();
-builder.Services.AddScoped<ITeamRepository,TeamRepository>();
+builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 
 builder.Services.AddScoped<IRoleService, RoleService>();
-builder.Services.AddScoped<IRoleRepository,RoleRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 
 //
 var app = builder.Build();

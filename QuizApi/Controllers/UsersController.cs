@@ -20,7 +20,7 @@ namespace QuizApi.Controllers
         private readonly IRoleService _roleService;
         private readonly IConfiguration _config;
 
-        public UsersController(IUserService userService, ITeamService teamService,IRoleService roleService, IConfiguration config)
+        public UsersController(IUserService userService, ITeamService teamService, IRoleService roleService, IConfiguration config)
         {
             _userService = userService;
             _teamService = teamService;
@@ -63,7 +63,7 @@ namespace QuizApi.Controllers
         }
 
         // POST api/<UsersController>
-         [HttpPost("Register")]
+        [HttpPost("Register")]
         [AllowAnonymous]
         public async Task<ActionResult> PostUser(UserModel user)
         {
@@ -77,7 +77,7 @@ namespace QuizApi.Controllers
                     return Ok();
                 }
                 else return NotFound("Invalid user role");
-                
+
             }
             catch (Exception ex)
             {
@@ -188,12 +188,12 @@ namespace QuizApi.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<string>> LoginAsync(UserLogin user)
         {
-            
+
             if (await _userService.FindUser(user.Email) == false)
             {
                 return NotFound("User with email: " + user.Email + " not found.");
             }
-            if(await _userService.VerifyPassword(user) == false)
+            if (await _userService.VerifyPassword(user) == false)
             {
                 return NotFound("Password incorrect");
             }
